@@ -20,6 +20,8 @@ import { UserCountArgs } from "./UserCountArgs";
 import { UserFindManyArgs } from "./UserFindManyArgs";
 import { UserFindUniqueArgs } from "./UserFindUniqueArgs";
 import { User } from "./User";
+import { ProjectFindManyArgs } from "../../project/base/ProjectFindManyArgs";
+import { Project } from "../../project/base/Project";
 import { UserService } from "../user.service";
 @graphql.Resolver(() => User)
 export class UserResolverBase {
@@ -85,5 +87,19 @@ export class UserResolverBase {
       }
       throw error;
     }
+  }
+
+  @graphql.ResolveField(() => [Project], { name: "projects" })
+  async resolveFieldProjects(
+    @graphql.Parent() parent: User,
+    @graphql.Args() args: ProjectFindManyArgs
+  ): Promise<Project[]> {
+    const results = await this.service.findProjects(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
   }
 }

@@ -8,14 +8,15 @@ generator client {
 }
 
 model User {
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
   firstName String?
-  id        String   @id @default(auto()) @map("_id") @mongo.ObjectId
+  id        String    @id @default(auto()) @map("_id") @mongo.ObjectId
   lastName  String?
   password  String
+  projects  Project[]
   roles     Json
-  updatedAt DateTime @updatedAt
-  username  String   @unique
+  updatedAt DateTime  @updatedAt
+  username  String    @unique
 }
 
 model Order {
@@ -64,4 +65,15 @@ model Product {
   name        String?
   orders      Order[]
   updatedAt   DateTime @updatedAt
+}
+
+model Project {
+  createdAt   DateTime  @default(now())
+  description String?
+  id          String    @id @default(auto()) @map("_id") @mongo.ObjectId
+  name        String
+  owner       User      @relation(fields: [ownerId], references: [id])
+  ownerId     String
+  startDate   DateTime?
+  updatedAt   DateTime  @updatedAt
 }
