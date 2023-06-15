@@ -13,13 +13,10 @@ import { ObjectType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsDate, IsString, IsOptional, ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
-import { Project } from "../../project/base/Project";
-import { IsJSONValue } from "@app/custom-validators";
-import { GraphQLJSON } from "graphql-type-json";
-import { JsonValue } from "type-fest";
+import { User } from "../../user/base/User";
 
 @ObjectType()
-class User {
+class Project {
   @ApiProperty({
     required: true,
   })
@@ -37,7 +34,7 @@ class User {
   @Field(() => String, {
     nullable: true,
   })
-  firstName!: string | null;
+  description!: string | null;
 
   @ApiProperty({
     required: true,
@@ -48,31 +45,31 @@ class User {
   id!: string;
 
   @ApiProperty({
-    required: false,
+    required: true,
     type: String,
   })
   @IsString()
-  @IsOptional()
-  @Field(() => String, {
-    nullable: true,
-  })
-  lastName!: string | null;
-
-  @ApiProperty({
-    required: false,
-    type: () => [Project],
-  })
-  @ValidateNested()
-  @Type(() => Project)
-  @IsOptional()
-  projects?: Array<Project>;
+  @Field(() => String)
+  name!: string;
 
   @ApiProperty({
     required: true,
+    type: () => User,
   })
-  @IsJSONValue()
-  @Field(() => GraphQLJSON)
-  roles!: JsonValue;
+  @ValidateNested()
+  @Type(() => User)
+  owner?: User;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsDate()
+  @Type(() => Date)
+  @IsOptional()
+  @Field(() => Date, {
+    nullable: true,
+  })
+  startDate!: Date | null;
 
   @ApiProperty({
     required: true,
@@ -81,14 +78,6 @@ class User {
   @Type(() => Date)
   @Field(() => Date)
   updatedAt!: Date;
-
-  @ApiProperty({
-    required: true,
-    type: String,
-  })
-  @IsString()
-  @Field(() => String)
-  username!: string;
 }
 
-export { User as User };
+export { Project as Project };
